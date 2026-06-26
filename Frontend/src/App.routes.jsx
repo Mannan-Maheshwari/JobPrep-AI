@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
     },{
         path: "/",
         element: <Protected>
-                <h1 className="text-white">Home Page</h1>
+                <h1 className="text-white text-4xl bold">Home Page</h1>
             </Protected>
     }
 

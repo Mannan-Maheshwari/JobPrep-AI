@@ -1,14 +1,33 @@
 import React from 'react'
 import { useNavigate, Link } from 'react-router';
+import { useAuth } from '../Hooks/useAuth';
+
+
 
 const Register = () => {
 
     const navigate = useNavigate();
+    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
-    const handleSubmit = (e) => {
+    const {loading, handleRegister} = useAuth();
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle registration logic here
+        await handleRegister ({username,email,password})
+        navigate('/')
     }
+
+    if (loading) {
+        return (
+            <main>
+                <h1>Loading....</h1>
+            </main>
+        );
+    } 
 
   return (
     <main className="screen bg-zinc-800 text-white flex items-center justify-center min-h-screen">
@@ -23,6 +42,7 @@ const Register = () => {
                         Username
                     </label>
                     <input
+                        onchange = {() => {setUsername(e.target.value)}}
                         type="text"
                         id="Username"
                         name="Username"
@@ -35,6 +55,7 @@ const Register = () => {
                         Email
                     </label>
                     <input
+                        onchange = {() => {setEmail(e.target.value)}}
                         type="email"
                         id="email"
                         name="email"
@@ -47,6 +68,7 @@ const Register = () => {
                         Password
                     </label>
                     <input
+                        onchange = {() => {setPassword(e.target.value)}}
                         type="password"
                         id="password"
                         name="password"

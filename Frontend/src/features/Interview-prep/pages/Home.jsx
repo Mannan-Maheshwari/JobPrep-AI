@@ -1,27 +1,20 @@
 import React, { useRef, useState } from "react";
+import { useInterview } from "../hooks/useInterview.js";
+import { useNavigate } from "react-router";
 
 const MAX_JOB_DESC_CHARS = 5000;
 
 const Home = () => {
-  const fileInputRef = useRef(null);
-  const [jobDescriptionLength, setJobDescriptionLength] = useState(0);
-  const [resumeFileName, setResumeFileName] = useState("");
-  const [isDragging, setIsDragging] = useState(false);
+  const { loading, generateAiReport } = useInterview();
+  const navigate = useNavigate();
+  const [jobDescription, setJobDescription] = useState("");
+  const [selfDescription, setSelfDescription] = useState("");
+  const resumeFileRef = useRef(); 
 
-  const handleResumeSelect = (file) => {
-    if (file) setResumeFileName(file.name);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && fileInputRef.current) {
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      fileInputRef.current.files = dataTransfer.files;
-      handleResumeSelect(file);
-    }
+  const handlegenerateReport = async () => {
+    const resumeFile = resumeFileRef.current?.files?.[0];
+    const data = await generateAiReport({ jobDescription, selfDescription, resume: resumeFile });
+    navigate(`/interview/${data._id}`);
   };
 
   return (
@@ -110,10 +103,10 @@ const Home = () => {
 
             <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-xl shadow-black/20">
               <textarea
+                onChange={(e) => setJobDescription(e.target.value)}
                 id="jobDescription"
                 name="jobDescription"
                 maxLength={MAX_JOB_DESC_CHARS}
-                onChange={(e) => setJobDescriptionLength(e.target.value.length)}
                 placeholder="Paste the full job description here... Our engine will extract core competencies, cultural markers, and hidden technical requirements."
                 className="min-h-[280px] w-full resize-y bg-transparent px-5 py-5 text-sm leading-relaxed text-slate-200 placeholder:text-slate-500 focus:outline-none sm:min-h-[360px] sm:px-6 sm:py-6 sm:text-base"
               />
@@ -203,7 +196,7 @@ const Home = () => {
                     PDF, DOCX up to 10MB
                   </span>
                   <input
-                    ref={fileInputRef}
+                    ref={resumeFileRef}
                     type="file"
                     id="resume"
                     name="resume"
@@ -234,6 +227,7 @@ const Home = () => {
                     Self-Description
                   </label>
                   <textarea
+                    onChange={(e) => setSelfDescription(e.target.value)}
                     id="selfDescription"
                     name="selfDescription"
                     rows={4}

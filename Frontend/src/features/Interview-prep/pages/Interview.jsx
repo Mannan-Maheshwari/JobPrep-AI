@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useInterview } from "../hooks/useInterview";
 
+// // MOCK DATA
 const REPORT_DATA = {
   MatchScore: 92,
   TechnicalQuestions: [
@@ -167,59 +169,9 @@ const severityStyles = {
   low: "border-slate-500/40 bg-slate-500/10 text-slate-300",
 };
 
-function getPhaseStatus(day) {
-  if (day === 1) return "completed";
-  if (day === 2) return "in-progress";
-  return "upcoming";
-}
-
-const statusBadge = {
-  completed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
-  "in-progress": "border-slate-500/40 bg-slate-500/10 text-slate-400",
-  upcoming: "border-slate-600/40 bg-slate-600/10 text-slate-500",
-};
-
-const statusLabel = {
-  completed: "Completed",
-  "in-progress": "In Progress",
-  upcoming: "Upcoming",
-};
-
-function TimelineIcon({ status }) {
-  if (status === "completed") {
-    return (
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30">
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-      </span>
-    );
-  }
-  if (status === "in-progress") {
-    return (
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-[#0f1629] text-blue-400">
-        <span className="flex gap-0.5">
-          <span className="h-1 w-1 rounded-full bg-blue-400" />
-          <span className="h-1 w-1 rounded-full bg-blue-400" />
-          <span className="h-1 w-1 rounded-full bg-blue-400" />
-        </span>
-      </span>
-    );
-  }
-  return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-slate-700 bg-[#0f1629] text-slate-600">
-      <span className="h-2 w-2 rounded-full bg-slate-600" />
-    </span>
-  );
-}
-
 const Interview = () => {
-  const { MatchScore, TechnicalQuestions, BehaviouralQuestions, SkillGaps, PreparationPlan } =
-    REPORT_DATA;
+  const { report } = useInterview();
 
-  const [roadmapOpen, setRoadmapOpen] = useState(true);
-  const [techOpen, setTechOpen] = useState(true);
-  const [behavOpen, setBehavOpen] = useState(true);
 
   return (
     <div className="flex min-h-screen bg-[#0a0e1b] text-white">
@@ -458,14 +410,12 @@ const Interview = () => {
                   {/* Timeline */}
                   <div className="mt-8 space-y-0">
                     {PreparationPlan.map((phase, index) => {
-                      const status = getPhaseStatus(phase.day);
                       const isLast = index === PreparationPlan.length - 1;
 
                       return (
                         <div key={phase.day} className="relative flex gap-4 sm:gap-6">
                           {/* Timeline rail */}
                           <div className="flex flex-col items-center">
-                            <TimelineIcon status={status} />
                             {!isLast && (
                               <div className="my-1 w-px flex-1 min-h-[2rem] bg-gradient-to-b from-blue-500/50 to-slate-700/50" />
                             )}
@@ -477,11 +427,6 @@ const Interview = () => {
                               <h2 className="text-base font-semibold sm:text-lg">
                                 Phase {phase.day}: {phase.focus}
                               </h2>
-                              <span
-                                className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusBadge[status]}`}
-                              >
-                                {statusLabel[status]}
-                              </span>
                             </div>
 
                             {status === "completed" && (

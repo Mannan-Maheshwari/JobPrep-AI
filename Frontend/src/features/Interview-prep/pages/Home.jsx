@@ -113,7 +113,7 @@ const Home = () => {
               <div className="flex justify-end border-t border-white/5 px-5 py-3 sm:px-6">
                 <span className="flex items-center gap-1.5 text-xs text-slate-500">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-600" />
-                  {jobDescriptionLength.toLocaleString()} /{" "}
+                  {jobDescription.toLocaleString()} /{" "}
                   {MAX_JOB_DESC_CHARS.toLocaleString()} Characters
                 </span>
               </div>
@@ -166,7 +166,6 @@ const Home = () => {
                     setIsDragging(true);
                   }}
                   onDragLeave={() => setIsDragging(false)}
-                  onDrop={handleDrop}
                   className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-4 py-8 transition-colors sm:py-10 ${
                     isDragging
                       ? "border-violet-400 bg-violet-500/10"
@@ -288,6 +287,7 @@ const Home = () => {
 
               <button
                 type="button"
+                onClick={handlegenerateReport}
                 className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-indigo-500 hover:shadow-violet-500/40 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-[#0d1117] sm:py-4 sm:text-base"
               >
                 Generate My Strategy

@@ -5,6 +5,7 @@ const ReportModel = require('../models/report.model');
 function mapAiReportToModel(reportByAI, { resume, selfDescription, jobDescription, userId }) {
     return {
         user: userId,
+        title: reportByAI.title,
         resume,
         JobDescription: jobDescription,
         SelfDescription: selfDescription,
@@ -17,28 +18,41 @@ function mapAiReportToModel(reportByAI, { resume, selfDescription, jobDescriptio
 }
 
 async function generateReportController(req, res) {
-    const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText();
-    const { selfDescription, jobDescription } = req.body;
+    try {
+        console.log("File:", req.file);
+        console.log("Body:", req.body);
 
-    const reportByAI = await generateReport({
-        resume: resumeContent.text,
-        selfDescription,
-        jobDescription
-    });
+        const resumeContent = await (
+            new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))
+        ).getText();
 
-    const report = await ReportModel.create(
-        mapAiReportToModel(reportByAI, {
+        const { selfDescription, jobDescription } = req.body;
+
+        const reportByAI = await generateReport({
             resume: resumeContent.text,
             selfDescription,
             jobDescription,
-            userId: req.user.id,
-        })
-    );
+        });
 
-    res.status(201).json({
-        message: "Job interview report generated successfully",
-        report,
-    });
+        const report = await ReportModel.create(
+            mapAiReportToModel(reportByAI, {
+                resume: resumeContent.text,
+                selfDescription,
+                jobDescription,
+                userId: req.user.id,
+            })
+        );
+
+        res.status(201).json({
+            message: "Job interview report generated successfully",
+            report,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: err.message,
+        });
+    }
 }
 
 async function getReportByIdController(req, res) {

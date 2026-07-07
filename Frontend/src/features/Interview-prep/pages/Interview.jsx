@@ -2,166 +2,166 @@ import React, { useState } from "react";
 import { useInterview } from "../hooks/useInterview";
 
 // // MOCK DATA
-const REPORT_DATA = {
-  MatchScore: 92,
-  TechnicalQuestions: [
-    {
-      question:
-        "Walk me through the architecture of a typical MERN stack application. How do MongoDB, Express.js, React.js, and Node.js interact to deliver a full-stack experience?",
-      intention:
-        "To assess overall understanding of the MERN stack architecture and how components interact.",
-      answer:
-        "Explain the typical interaction: React handles the UI, sending requests to Express.js. Express.js routes these requests, interacts with MongoDB (via Mongoose/Node.js driver) for data, and sends responses back. Node.js provides the runtime for Express.js. Emphasize RESTful API communication and state management in React.",
-    },
-    {
-      question:
-        "Given your URL Shortener project, how would you enhance its backend using Express.js to include user authentication and custom short links, ensuring data validation and robust error handling?",
-      intention:
-        "To probe depth of Node.js/Express.js, API design, error handling, and database interaction.",
-      answer:
-        "Describe designing routes (e.g., /api/shorten, /:shortCode for redirect), using Express.js middleware for parsing and error handling, connecting to MongoDB for storing/retrieving links, and implementing validation for input URLs. Mention using `async/await` for database operations and proper HTTP status codes.",
-    },
-    {
-      question:
-        "What are the primary advantages of using Next.js for a production-ready web application compared to a traditional Create React App setup? Provide specific use cases.",
-      intention:
-        "To assess understanding of Next.js features, performance optimization, and architectural choices.",
-      answer:
-        "Discuss benefits like Server-Side Rendering (SSR) for initial page load performance and SEO, Static Site Generation (SSG) for highly performant static content, automatic code splitting, optimized image loading, and built-in API routes. Contrast with client-side rendering challenges in plain React.",
-    },
-    {
-      question:
-        "Explain different types of indexes in MongoDB and when you would choose to use each type. How do indexes impact read and write performance?",
-      intention:
-        "To assess database optimization knowledge and understanding of performance implications.",
-      answer:
-        "Discuss common types (e.g., single-field, compound, multikey, text, geospatial), how they improve query performance by reducing scan time, and their trade-offs (e.g., increased write overhead, memory usage). Give examples of when to use each.",
-    },
-    {
-      question:
-        "Describe the process of user authentication in a MERN stack application using JSON Web Tokens (JWTs). What are the security considerations and best practices you would follow?",
-      intention:
-        "To assess knowledge of authentication mechanisms and security best practices in web applications.",
-      answer:
-        "Describe a common flow: user registration/login, server generates JWT, sends to client. Client stores JWT (e.g., in `localStorage`/`httpOnly` cookie) and sends it with subsequent requests. Server validates JWT. Discuss pros (stateless, scalability) and cons (security of storage, token invalidation) of JWTs.",
-    },
-    {
-      question:
-        "Given your interest in Generative AI, how do you envision integrating AI-powered capabilities into a MERN stack web application? What technical challenges might you anticipate?",
-      intention:
-        "To probe interest in Generative AI, creative problem-solving, and foresight regarding new technologies.",
-      answer:
-        "Discuss potential use cases like AI-powered content generation for blogs, personalized recommendations, intelligent chatbots, or dynamic image/video creation. Challenges could include API integration complexity, latency, cost, data privacy, and managing AI model updates.",
-    },
-  ],
-  BehaviouralQuestions: [
-    {
-      question:
-        "Tell me about a time you faced a significant technical challenge in one of your projects. How did you approach it, and what was the outcome?",
-      intention:
-        "To assess problem-solving skills, resilience, and ability to learn from challenges.",
-      answer:
-        "Use the STAR method: Describe a Situation (e.g., a bug in the URL shortener backend or a challenge during a hackathon), the Task you had to complete, the Actions you took (e.g., debugging steps, research, collaboration), and the Result or outcome, including what you learned.",
-    },
-    {
-      question:
-        "You mentioned 'basic' Node.js skills in your resume. How do you plan to strengthen your proficiency in Node.js and other backend technologies relevant to a full-stack role?",
-      intention:
-        "To gauge self-awareness, growth mindset, and initiative in overcoming skill gaps.",
-      answer:
-        "Acknowledge the gap and demonstrate proactive learning. For example, explain how you are actively studying Node.js/Express.js documentation, building small projects, or following online courses. Emphasize your continuous learning mindset and eagerness to quickly ramp up in required technologies.",
-    },
-    {
-      question:
-        "Describe a situation where you had to work effectively within a team, especially during a high-pressure environment like a hackathon. What was your role, and what did you learn about collaboration?",
-      intention:
-        "To evaluate teamwork, communication skills, and ability to collaborate effectively in a development environment.",
-      answer:
-        "Describe a specific instance, perhaps from a hackathon, highlighting your role (e.g., frontend lead, backend contributor). Explain how you communicated with teammates, resolved conflicts, contributed to a shared goal, and learned from the collaborative process. Focus on active listening and constructive feedback.",
-    },
-    {
-      question:
-        "Given your interest in Generative AI and other emerging technologies, how do you stay updated with new developments and trends in the tech industry?",
-      intention:
-        "To assess your curiosity, initiative, and commitment to continuous learning in a rapidly evolving tech landscape.",
-      answer:
-        "Explain your process for staying current, such as following industry blogs, attending webinars, contributing to open-source projects, or taking online courses. Specifically mention how you are exploring Generative AI (e.g., experimenting with APIs, reading research papers).",
-    },
-  ],
-  SkillGaps: [
-    { skill: "Node.js/Express.js Depth", severity: "medium" },
-    { skill: "Web Application Deployment & CI/CD", severity: "medium" },
-    { skill: "Formal Object-Oriented Programming (OOP) Application", severity: "low" },
-  ],
-  PreparationPlan: [
-    {
-      day: 1,
-      focus: "MERN Stack Fundamentals & JavaScript Deep Dive",
-      tasks: [
-        "Review core concepts of MongoDB, Express.js, React.js, and Node.js.",
-        "Brush up on advanced JavaScript features (ES6+, async/await, promises).",
-        "Understand the typical data flow and interaction between MERN stack components.",
-        "Practice implementing basic CRUD operations using all four parts of MERN.",
-      ],
-    },
-    {
-      day: 2,
-      focus: "Node.js & Express.js for Backend Development",
-      tasks: [
-        "Focus on building robust RESTful APIs with Express.js, including routing, middleware, and error handling.",
-        "Implement data validation (e.g., using Joi or Express-validator) and explore authentication strategies (JWTs, session-based).",
-        "Practice integrating MongoDB with Mongoose to perform complex queries and data modeling.",
-      ],
-    },
-    {
-      day: 3,
-      focus: "React & Next.js for Frontend Excellence",
-      tasks: [
-        "Review advanced React concepts: Hooks, Context API, state management (e.g., Redux basics, Zustand).",
-        "Deep dive into Next.js features: Server-Side Rendering (SSR), Static Site Generation (SSG), API routes, and data fetching strategies.",
-        "Practice building complex, responsive UIs using Tailwind CSS and component libraries if applicable.",
-      ],
-    },
-    {
-      day: 4,
-      focus: "Database Design, System Architecture & Deployment",
-      tasks: [
-        "Understand best practices for MongoDB schema design, indexing, and query optimization.",
-        "Learn about basic system design principles for scalable web applications.",
-        "Research common deployment strategies for MERN applications (e.g., Vercel, Netlify, Heroku, AWS EC2/Render) and CI/CD basics.",
-      ],
-    },
-    {
-      day: 5,
-      focus: "Behavioral Questions & Project Review",
-      tasks: [
-        "Prepare answers to common behavioral questions using the STAR method.",
-        "Thoroughly review all past projects, focusing on technical decisions, challenges faced, and lessons learned.",
-        "Formulate intelligent questions to ask the interviewer about the role, team, and company culture.",
-      ],
-    },
-    {
-      day: 6,
-      focus: "Generative AI Integration & Problem Solving",
-      tasks: [
-        "Research practical applications of Generative AI in web development and current trends.",
-        "Think about how you would integrate a third-party AI API into a MERN application (e.g., for content generation, image processing).",
-        "Practice problem-solving for common algorithmic questions (e.g., LeetCode mediums related to data structures).",
-        "Consider edge cases and error handling in your technical solutions.",
-      ],
-    },
-    {
-      day: 7,
-      focus: "Mock Interview & Final Review",
-      tasks: [
-        "Conduct a full mock interview (both technical and behavioral) with a peer or mentor.",
-        "Review all prepared answers and technical concepts one last time.",
-        "Ensure your environment is set up for any coding challenges (IDE, specific tools).",
-        "Get adequate rest and mentally prepare for the interview.",
-      ],
-    },
-  ],
-};
+// const REPORT_DATA = {
+//   MatchScore: 92,
+//   TechnicalQuestions: [
+//     {
+//       question:
+//         "Walk me through the architecture of a typical MERN stack application. How do MongoDB, Express.js, React.js, and Node.js interact to deliver a full-stack experience?",
+//       intention:
+//         "To assess overall understanding of the MERN stack architecture and how components interact.",
+//       answer:
+//         "Explain the typical interaction: React handles the UI, sending requests to Express.js. Express.js routes these requests, interacts with MongoDB (via Mongoose/Node.js driver) for data, and sends responses back. Node.js provides the runtime for Express.js. Emphasize RESTful API communication and state management in React.",
+//     },
+//     {
+//       question:
+//         "Given your URL Shortener project, how would you enhance its backend using Express.js to include user authentication and custom short links, ensuring data validation and robust error handling?",
+//       intention:
+//         "To probe depth of Node.js/Express.js, API design, error handling, and database interaction.",
+//       answer:
+//         "Describe designing routes (e.g., /api/shorten, /:shortCode for redirect), using Express.js middleware for parsing and error handling, connecting to MongoDB for storing/retrieving links, and implementing validation for input URLs. Mention using `async/await` for database operations and proper HTTP status codes.",
+//     },
+//     {
+//       question:
+//         "What are the primary advantages of using Next.js for a production-ready web application compared to a traditional Create React App setup? Provide specific use cases.",
+//       intention:
+//         "To assess understanding of Next.js features, performance optimization, and architectural choices.",
+//       answer:
+//         "Discuss benefits like Server-Side Rendering (SSR) for initial page load performance and SEO, Static Site Generation (SSG) for highly performant static content, automatic code splitting, optimized image loading, and built-in API routes. Contrast with client-side rendering challenges in plain React.",
+//     },
+//     {
+//       question:
+//         "Explain different types of indexes in MongoDB and when you would choose to use each type. How do indexes impact read and write performance?",
+//       intention:
+//         "To assess database optimization knowledge and understanding of performance implications.",
+//       answer:
+//         "Discuss common types (e.g., single-field, compound, multikey, text, geospatial), how they improve query performance by reducing scan time, and their trade-offs (e.g., increased write overhead, memory usage). Give examples of when to use each.",
+//     },
+//     {
+//       question:
+//         "Describe the process of user authentication in a MERN stack application using JSON Web Tokens (JWTs). What are the security considerations and best practices you would follow?",
+//       intention:
+//         "To assess knowledge of authentication mechanisms and security best practices in web applications.",
+//       answer:
+//         "Describe a common flow: user registration/login, server generates JWT, sends to client. Client stores JWT (e.g., in `localStorage`/`httpOnly` cookie) and sends it with subsequent requests. Server validates JWT. Discuss pros (stateless, scalability) and cons (security of storage, token invalidation) of JWTs.",
+//     },
+//     {
+//       question:
+//         "Given your interest in Generative AI, how do you envision integrating AI-powered capabilities into a MERN stack web application? What technical challenges might you anticipate?",
+//       intention:
+//         "To probe interest in Generative AI, creative problem-solving, and foresight regarding new technologies.",
+//       answer:
+//         "Discuss potential use cases like AI-powered content generation for blogs, personalized recommendations, intelligent chatbots, or dynamic image/video creation. Challenges could include API integration complexity, latency, cost, data privacy, and managing AI model updates.",
+//     },
+//   ],
+//   BehaviouralQuestions: [
+//     {
+//       question:
+//         "Tell me about a time you faced a significant technical challenge in one of your projects. How did you approach it, and what was the outcome?",
+//       intention:
+//         "To assess problem-solving skills, resilience, and ability to learn from challenges.",
+//       answer:
+//         "Use the STAR method: Describe a Situation (e.g., a bug in the URL shortener backend or a challenge during a hackathon), the Task you had to complete, the Actions you took (e.g., debugging steps, research, collaboration), and the Result or outcome, including what you learned.",
+//     },
+//     {
+//       question:
+//         "You mentioned 'basic' Node.js skills in your resume. How do you plan to strengthen your proficiency in Node.js and other backend technologies relevant to a full-stack role?",
+//       intention:
+//         "To gauge self-awareness, growth mindset, and initiative in overcoming skill gaps.",
+//       answer:
+//         "Acknowledge the gap and demonstrate proactive learning. For example, explain how you are actively studying Node.js/Express.js documentation, building small projects, or following online courses. Emphasize your continuous learning mindset and eagerness to quickly ramp up in required technologies.",
+//     },
+//     {
+//       question:
+//         "Describe a situation where you had to work effectively within a team, especially during a high-pressure environment like a hackathon. What was your role, and what did you learn about collaboration?",
+//       intention:
+//         "To evaluate teamwork, communication skills, and ability to collaborate effectively in a development environment.",
+//       answer:
+//         "Describe a specific instance, perhaps from a hackathon, highlighting your role (e.g., frontend lead, backend contributor). Explain how you communicated with teammates, resolved conflicts, contributed to a shared goal, and learned from the collaborative process. Focus on active listening and constructive feedback.",
+//     },
+//     {
+//       question:
+//         "Given your interest in Generative AI and other emerging technologies, how do you stay updated with new developments and trends in the tech industry?",
+//       intention:
+//         "To assess your curiosity, initiative, and commitment to continuous learning in a rapidly evolving tech landscape.",
+//       answer:
+//         "Explain your process for staying current, such as following industry blogs, attending webinars, contributing to open-source projects, or taking online courses. Specifically mention how you are exploring Generative AI (e.g., experimenting with APIs, reading research papers).",
+//     },
+//   ],
+//   SkillGaps: [
+//     { skill: "Node.js/Express.js Depth", severity: "medium" },
+//     { skill: "Web Application Deployment & CI/CD", severity: "medium" },
+//     { skill: "Formal Object-Oriented Programming (OOP) Application", severity: "low" },
+//   ],
+//   PreparationPlan: [
+//     {
+//       day: 1,
+//       focus: "MERN Stack Fundamentals & JavaScript Deep Dive",
+//       tasks: [
+//         "Review core concepts of MongoDB, Express.js, React.js, and Node.js.",
+//         "Brush up on advanced JavaScript features (ES6+, async/await, promises).",
+//         "Understand the typical data flow and interaction between MERN stack components.",
+//         "Practice implementing basic CRUD operations using all four parts of MERN.",
+//       ],
+//     },
+//     {
+//       day: 2,
+//       focus: "Node.js & Express.js for Backend Development",
+//       tasks: [
+//         "Focus on building robust RESTful APIs with Express.js, including routing, middleware, and error handling.",
+//         "Implement data validation (e.g., using Joi or Express-validator) and explore authentication strategies (JWTs, session-based).",
+//         "Practice integrating MongoDB with Mongoose to perform complex queries and data modeling.",
+//       ],
+//     },
+//     {
+//       day: 3,
+//       focus: "React & Next.js for Frontend Excellence",
+//       tasks: [
+//         "Review advanced React concepts: Hooks, Context API, state management (e.g., Redux basics, Zustand).",
+//         "Deep dive into Next.js features: Server-Side Rendering (SSR), Static Site Generation (SSG), API routes, and data fetching strategies.",
+//         "Practice building complex, responsive UIs using Tailwind CSS and component libraries if applicable.",
+//       ],
+//     },
+//     {
+//       day: 4,
+//       focus: "Database Design, System Architecture & Deployment",
+//       tasks: [
+//         "Understand best practices for MongoDB schema design, indexing, and query optimization.",
+//         "Learn about basic system design principles for scalable web applications.",
+//         "Research common deployment strategies for MERN applications (e.g., Vercel, Netlify, Heroku, AWS EC2/Render) and CI/CD basics.",
+//       ],
+//     },
+//     {
+//       day: 5,
+//       focus: "Behavioral Questions & Project Review",
+//       tasks: [
+//         "Prepare answers to common behavioral questions using the STAR method.",
+//         "Thoroughly review all past projects, focusing on technical decisions, challenges faced, and lessons learned.",
+//         "Formulate intelligent questions to ask the interviewer about the role, team, and company culture.",
+//       ],
+//     },
+//     {
+//       day: 6,
+//       focus: "Generative AI Integration & Problem Solving",
+//       tasks: [
+//         "Research practical applications of Generative AI in web development and current trends.",
+//         "Think about how you would integrate a third-party AI API into a MERN application (e.g., for content generation, image processing).",
+//         "Practice problem-solving for common algorithmic questions (e.g., LeetCode mediums related to data structures).",
+//         "Consider edge cases and error handling in your technical solutions.",
+//       ],
+//     },
+//     {
+//       day: 7,
+//       focus: "Mock Interview & Final Review",
+//       tasks: [
+//         "Conduct a full mock interview (both technical and behavioral) with a peer or mentor.",
+//         "Review all prepared answers and technical concepts one last time.",
+//         "Ensure your environment is set up for any coding challenges (IDE, specific tools).",
+//         "Get adequate rest and mentally prepare for the interview.",
+//       ],
+//     },
+//   ],
+// };
 
 const severityStyles = {
   high: "border-red-500/40 bg-red-500/10 text-red-300",
@@ -301,7 +301,7 @@ const Interview = () => {
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">Technical Questions</h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    {TechnicalQuestions.length} questions tailored to your MERN stack profile
+                    {report.TechnicalQuestions.length} questions tailored to your MERN stack profile
                   </p>
                 </div>
                 <button
@@ -336,7 +336,7 @@ const Interview = () => {
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">Behavioral Questions</h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    {BehaviouralQuestions.length} questions to prepare your STAR responses
+                    {report.BehavioralQuestions.length} questions to prepare your STAR responses
                   </p>
                 </div>
                 <button
@@ -358,7 +358,7 @@ const Interview = () => {
               </div>
               {behavOpen && (
                 <div className="mt-6 space-y-4">
-                  {BehaviouralQuestions.map((item, i) => (
+                  {report.BehavioralQuestions.map((item, i) => (
                     <QuestionCard key={item.question} index={i + 1} {...item} accent="violet" />
                   ))}
                 </div>
@@ -398,7 +398,7 @@ const Interview = () => {
 
                   {/* Match score — visible on mobile/tablet */}
                   <div className="mt-5 flex items-center gap-4 rounded-xl border border-white/10 bg-[#111827] p-4 xl:hidden">
-                    <MatchScoreRing score={MatchScore} />
+                    <MatchScoreRing score={report.MatchScore} />
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                         Profile Match
@@ -409,8 +409,8 @@ const Interview = () => {
 
                   {/* Timeline */}
                   <div className="mt-8 space-y-0">
-                    {PreparationPlan.map((phase, index) => {
-                      const isLast = index === PreparationPlan.length - 1;
+                    {report.PreparationPlan.map((phase, index) => {
+                      const isLast = index === report.PreparationPlan.length - 1;
 
                       return (
                         <div key={phase.day} className="relative flex gap-4 sm:gap-6">
@@ -502,7 +502,7 @@ const Interview = () => {
                 <h3 className="font-semibold text-white">Skill Gaps</h3>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                {SkillGaps.map(({ skill, severity }) => (
+                {report.SkillGaps.map(({ skill, severity }) => (
                   <span
                     key={skill}
                     className={`rounded-full border px-3 py-1 text-xs font-medium ${severityStyles[severity]}`}

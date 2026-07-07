@@ -19,7 +19,7 @@ const ReportSchema = z.object({
     })).describe("Behavioral questions that can be asked in the interview along with their intention and how to answer them"),
     skillGaps: z.array(z.object({
         skill: z.string().describe("The skill which the candidate is lacking"),
-        severity: z.enum([ "low", "medium", "high" ]).describe("The severity of this skill gap, i.e. how important is this skill for the job and how much it can impact the candidate's chances")
+        severity: z.string().toLowerCase().pipe(z.enum(["low", "medium", "high"])).describe("The severity of this skill gap, i.e. how important is this skill for the job and how much it can impact the candidate's chances")
     })).describe("List of skill gaps in the candidate's profile along with their severity"),
     preparationPlan: z.array(z.object({
         day: z.number().describe("The day number in the preparation plan, starting from 1"),
@@ -65,7 +65,7 @@ const geminiResponseSchema = {
                 type: Type.OBJECT,
                 properties: {
                     skill: { type: Type.STRING, description: "The skill which the candidate is lacking" },
-                    severity: { type: Type.STRING, description: "The severity of this skill gap, i.e. low, medium, or high" }
+                    severity: { type: Type.STRING,type: Type.STRING, enum: ["low", "medium", "high"], description: "The severity of this skill gap, i.e. low, medium, or high" }
                 }
             }
         },
@@ -104,6 +104,9 @@ async function generateReport({resume,selfDescription,jobDescription}) {
             responseSchema:geminiResponseSchema 
         }
     })
+
+    console.log("RAW GEMINI RESPONSE:", response.text);   // <-- add this
+    console.log("FINISH REASON:", response.candidates?.[0]?.finishReason);
 
     const parsed = JSON.parse(response.text);
     return ReportSchema.parse(parsed);

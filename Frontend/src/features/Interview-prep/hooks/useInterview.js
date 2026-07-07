@@ -9,13 +9,22 @@ export const useInterview = () => {
     }
     const {loading, setLoading, report, setReport, reports, setReports} = context;
 
-    const generateAiReport = async({jobDescription, selfDescription, resume}) => {
+    const generateAiReport = async({jobDescription, selfDescription, resumeFile}) => {
         setLoading(true)
+        let response = null
         try {
-            const response = await generateReport({ jobDescription, selfDescription, resumeFile: resume })
+            console.log("HOOK:", resumeFile);
+            console.log("HOOK instanceof File:", resumeFile instanceof File);
+
+
+            response = await generateReport({ jobDescription, selfDescription, resumeFile: resumeFile });
+            console.log("API Response:", response);
             setReport(response.report);
+            return response.report;
+
         } catch (error) {
             console.log(error)
+            return null
         }finally {
             setLoading(false)
         }
@@ -24,23 +33,32 @@ export const useInterview = () => {
 
     const fetchReportById = async (interviewId) => {
         setLoading(true)
+        let response = null
         try{
-            const response = await getReportById(interviewId)
+            response = await getReportById(interviewId);
             setReport(response.report);
+            return response.report;
+
         }catch(error){
             console.log(error)
+            return null
         }finally {
             setLoading(false)
         }
+
     }
 
     const fetchAllReports = async () => {
         setLoading(true)
+        let response = null
         try{
-            const response = await getAllReports()
+            response = await getAllReports()
             setReports(response.reports);
+            return response.reports;
+
         }  catch(error){
             console.log(error)
+            return null
         }finally {
             setLoading(false)
         }

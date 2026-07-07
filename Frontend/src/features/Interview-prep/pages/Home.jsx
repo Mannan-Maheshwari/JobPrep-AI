@@ -13,8 +13,22 @@ const Home = () => {
 
   const handlegenerateReport = async () => {
     const resumeFile = resumeFileRef.current?.files?.[0];
-    const data = await generateAiReport({ jobDescription, selfDescription, resume: resumeFile });
-    navigate(`/interview/${data._id}`);
+
+    
+    console.log("HOME:", resumeFile);
+    console.log("HOME instanceof File:", resumeFile instanceof File);
+
+
+    const report = await generateAiReport({ jobDescription, selfDescription, resumeFile });
+    console.log("REPORT:", report);
+
+    if (!report) {
+        console.log("Report is null");
+        return;
+    }
+
+    console.log("Navigating to:", `/interview/${report._id}`);
+    navigate(`/interview/${report._id}`);
   };
 
   return (
@@ -40,7 +54,7 @@ const Home = () => {
               </svg>
             </span>
             <span className="text-base font-semibold tracking-tight sm:text-lg">
-              ObsidianSynth
+              Job-Prep AI
             </span>
           </div>
 
@@ -50,13 +64,6 @@ const Home = () => {
             </a>
             <a href="#" className="transition-colors hover:text-white">
               Pricing
-            </a>
-            <a
-              href="#"
-              className="border-b border-white pb-0.5 text-white"
-              aria-current="page"
-            >
-              Plan Creator
             </a>
           </nav>
 
@@ -90,9 +97,6 @@ const Home = () => {
           {/* Phase 01 — Job Description */}
           <section className="lg:col-span-3">
             <div className="mb-4 flex flex-wrap items-center gap-3">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-400">
-                Phase 01
-              </span>
             </div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <h2 className="text-xl font-semibold sm:text-2xl">The Opportunity</h2>
@@ -124,9 +128,6 @@ const Home = () => {
           <section className="flex flex-col gap-6 lg:col-span-2">
             <div>
               <div className="mb-4">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-400">
-                  Phase 02
-                </span>
               </div>
               <h2 className="mb-5 text-xl font-semibold sm:text-2xl">Your Profile</h2>
 
@@ -161,16 +162,7 @@ const Home = () => {
 
                 <label
                   htmlFor="resume"
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragging(true);
-                  }}
-                  onDragLeave={() => setIsDragging(false)}
-                  className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-4 py-8 transition-colors sm:py-10 ${
-                    isDragging
-                      ? "border-violet-400 bg-violet-500/10"
-                      : "border-white/15 bg-white/[0.02] hover:border-violet-500/40 hover:bg-violet-500/5"
-                  }`}
+                  className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-4 py-8 transition-colors sm:py-10`}
                 >
                   <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/15 text-violet-400">
                     <svg
@@ -189,7 +181,7 @@ const Home = () => {
                     </svg>
                   </span>
                   <span className="text-sm font-medium text-slate-200">
-                    {resumeFileName || "Drop resume to sync"}
+                    {"Drop resume to sync"}
                   </span>
                   <span className="mt-1 text-xs text-slate-500">
                     PDF, DOCX up to 10MB
@@ -201,7 +193,6 @@ const Home = () => {
                     name="resume"
                     accept=".pdf"
                     className="sr-only"
-                    onChange={(e) => handleResumeSelect(e.target.files?.[0])}
                   />
                 </label>
 
@@ -327,7 +318,7 @@ const Home = () => {
             >
               <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
             </svg>
-            <span>ObsidianSynth © 2024</span>
+            <span>Job-Prep AI @2026</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <a href="#" className="tracking-wider transition-colors hover:text-slate-300">

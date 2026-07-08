@@ -31,6 +31,14 @@ const Home = () => {
     navigate(`/interview/${report._id}`);
   };
 
+  if(loading){
+    return (
+      <main className="flex h-screen items-center justify-center bg-[#05070a] text-white">
+        <p className="text-lg font-semibold">Generating your interview strategy...</p>
+      </main>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#05070a] text-white selection:bg-violet-500/30">
       {/* subtle radial glow */}

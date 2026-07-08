@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useInterview } from "../hooks/useInterview";
+import { useNavigate, useParams } from "react-router";
 
 // // MOCK DATA
 // const REPORT_DATA = {
@@ -170,7 +171,30 @@ const severityStyles = {
 };
 
 const Interview = () => {
-  const { report } = useInterview();
+  const { report, fetchReportById, loading } = useInterview();
+  const { id: interviewId } = useParams();
+
+  useEffect(() => {
+    if (interviewId) {
+      fetchReportById(interviewId);
+    }
+  }, [interviewId]);
+
+  if (!report) {
+    return <div className="flex min-h-screen items-center justify-center bg-[#0a0e1b] text-white">Loading...</div>;
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0e1b] text-white">
+        <p className="text-lg font-semibold">Fetching your interview strategy...</p>
+      </div>
+    );
+  }
+
+  const [techOpen, setTechOpen] = useState(true);
+  const [behavOpen, setBehavOpen] = useState(true);
+  const [roadmapOpen, setRoadmapOpen] = useState(true);
 
 
   return (
@@ -323,7 +347,7 @@ const Interview = () => {
               </div>
               {techOpen && (
                 <div className="mt-6 space-y-4">
-                  {TechnicalQuestions.map((item, i) => (
+                  {report.TechnicalQuestions.map((item, i) => (
                     <QuestionCard key={item.question} index={i + 1} {...item} accent="blue" />
                   ))}
                 </div>
@@ -336,7 +360,7 @@ const Interview = () => {
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">Behavioral Questions</h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    {report.BehavioralQuestions.length} questions to prepare your STAR responses
+                    {report.BehaviouralQuestions.length} questions to prepare your STAR responses
                   </p>
                 </div>
                 <button
@@ -358,7 +382,7 @@ const Interview = () => {
               </div>
               {behavOpen && (
                 <div className="mt-6 space-y-4">
-                  {report.BehavioralQuestions.map((item, i) => (
+                  {report.BehaviouralQuestions.map((item, i) => (
                     <QuestionCard key={item.question} index={i + 1} {...item} accent="violet" />
                   ))}
                 </div>
@@ -429,7 +453,7 @@ const Interview = () => {
                               </h2>
                             </div>
 
-                            {status === "completed" && (
+                            {(
                               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 {phase.tasks.slice(0, 2).map((task) => (
                                   <div key={task} className="rounded-xl border border-white/10 bg-[#111827] p-4">
@@ -437,25 +461,19 @@ const Interview = () => {
                                       {task.split(".")[0]}
                                     </p>
                                     <p className="mt-2 line-clamp-2 text-xs text-slate-500">{task}</p>
-                                    <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
-                                      <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                      </svg>
-                                      {MatchScore}% Mastery
-                                    </div>
                                   </div>
                                 ))}
                               </div>
                             )}
 
-                            {status === "in-progress" && (
+                            {(
                               <div className="rounded-xl border border-blue-500/20 bg-[#111827] p-5">
                                 <p className="text-sm font-medium text-slate-200">{phase.focus}</p>
                                 <p className="mt-2 text-xs leading-relaxed text-slate-500">{phase.tasks[0]}</p>
                               </div>
                             )}
 
-                            {status === "upcoming" && (
+                            {(
                               <div className="rounded-xl border border-white/5 bg-[#111827]/50 p-4 opacity-70">
                                 <ul className="space-y-2">
                                   {phase.tasks.map((task) => (
@@ -485,9 +503,9 @@ const Interview = () => {
                 Profile Match Score
               </p>
               <div className="mt-4 flex items-center gap-4">
-                <MatchScoreRing score={MatchScore} size="lg" />
+                <MatchScoreRing score={report.MatchScore} size="lg" />
                 <div>
-                  <p className="text-2xl font-bold text-white">{MatchScore}%</p>
+                  <p className="text-2xl font-bold text-white">{report.MatchScore}%</p>
                   <p className="text-xs text-slate-500">Role alignment</p>
                 </div>
               </div>

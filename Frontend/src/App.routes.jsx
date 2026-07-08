@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
             </Protected>
     },
     {
-        path: "/interview",
+        path: "/interview/:id",
         element: <Interview />
     }
 

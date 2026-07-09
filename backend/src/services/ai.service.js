@@ -31,6 +31,7 @@ const ReportSchema = z.object({
 
 const geminiResponseSchema = {
     type: Type.OBJECT,
+    required: ["title", "matchScore", "technicalQuestions", "behavioralQuestions", "skillGaps", "preparationPlan"],
     properties: {
         title: { type: Type.STRING, description: "The title of the job for which the interview report is generated" },
         matchScore: { type: Type.INTEGER, description: "A score between 0 and 100 indicating how well the candidate's profile matches the job description" },
@@ -88,28 +89,46 @@ const geminiResponseSchema = {
     }
 };
 
-async function generateReport({resume,selfDescription,jobDescription}) {
-
+async function generateReport({ resume, selfDescription, jobDescription }) {
     const prompt = `Generate an interview report for a candidate with the following details:
                     Resume:${resume},
                     Self Description:${selfDescription},
                     Job Description:${jobDescription},
-                    `
+                    `;
 
-    const response = await ai.models.generateContent({
-        model:"gemini-2.5-flash",
-        contents:prompt,
-        config:{
-            responseMimeType:"application/json",
-            responseSchema:geminiResponseSchema 
+    const maxRetries = 3;
+    let lastError;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: geminiResponseSchema,
+                    maxOutputTokens: 8192,
+                    thinkingConfig: {
+                        thinkingBudget: 0   // disable thinking — all tokens go to the actual JSON output
+                    }
+                }
+            });
+
+            const parsed = JSON.parse(response.text);
+            console.log("PARSED KEYS:", Object.keys(parsed));
+            return ReportSchema.parse(parsed);
+        } catch (err) {
+            lastError = err;
+            const isRetryable = err.status === 503 || err.status === 429;
+            if (!isRetryable || attempt === maxRetries) throw err;
+
+            const delayMs = attempt * 1000; // simple linear backoff: 1s, 2s
+            console.warn(`Gemini call failed (attempt ${attempt}/${maxRetries}), retrying in ${delayMs}ms...`);
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
         }
-    })
+    }
 
-    console.log("RAW GEMINI RESPONSE:", response.text);   // <-- add this
-    console.log("FINISH REASON:", response.candidates?.[0]?.finishReason);
-
-    const parsed = JSON.parse(response.text);
-    return ReportSchema.parse(parsed);
+    throw lastError;
 }
 
 module.exports = generateReport

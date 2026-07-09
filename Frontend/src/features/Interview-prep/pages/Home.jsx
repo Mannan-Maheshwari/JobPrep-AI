@@ -5,9 +5,9 @@ import { useNavigate } from "react-router";
 const MAX_JOB_DESC_CHARS = 5000;
 
 const Home = () => {
-  const { loading, generateAiReport } = useInterview();
+  const { loading, generateAiReport, reports = [] } = useInterview();
   const navigate = useNavigate();
-  const [jobDescription, setJobDescription] = useState("");
+  const [jobDescription, setJobDescription] = useState(""); 
   const [selfDescription, setSelfDescription] = useState("");
   const resumeFileRef = useRef(); 
 
@@ -130,7 +130,23 @@ const Home = () => {
                 </span>
               </div>
             </div>
+
+          {/* Recent Reports */}
+          <section className="lg:col-span-2 mt-10">
+            <h2 className="mb-5 text-xl font-semibold sm:text-2xl">Recent Reports</h2>
+            <div className="space-y-4">
+              {reports.slice(0, 3).map((report) => (
+                <div key={report._id} className="rounded-2xl border border-white/10 bg-[#0d1117] p-5 shadow-xl shadow-black/20 sm:p-6" onClick={() => navigate(`/interview/${report._id}`)}>
+                  <h3 className="text-lg font-semibold text-slate-200">{report.title}</h3>
+                  <p className="text-sm text-slate-500">Created At: {new Date(report.createdAt).toLocaleString()}</p>
+                  <p className="text-sm text-slate-500">Match Score: {report.MatchScore}/100</p>
+                </div>
+              ))}
+            </div>
           </section>
+
+          </section>
+
 
           {/* Phase 02 — Profile + CTA */}
           <section className="flex flex-col gap-6 lg:col-span-2">

@@ -56,8 +56,8 @@ export const useInterview = () => {
         let response = null
         try{
             response = await getAllReports()
-            setReports(response.reports);
-            return response.reports;
+            setReports(response.interviewReports);
+            return response.interviewReports;
 
         }  catch(error){
             console.log(error)

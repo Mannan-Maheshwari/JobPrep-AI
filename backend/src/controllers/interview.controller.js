@@ -1,5 +1,5 @@
 const pdfParse = require('pdf-parse')
-const generateReport = require("../services/ai.service")
+const {generateReport, generateResumePdf} = require("../services/ai.service")
 const ReportModel = require('../models/report.model');
 
 function mapAiReportToModel(reportByAI, { resume, selfDescription, jobDescription, userId }) {
@@ -82,9 +82,38 @@ async function getAllReportsController(req, res) {
     })
 }
 
+async function generateResumePdfController(req, res) {
+    try {
+        const { reportId } = req.params;
+
+        const report = await ReportModel.findOne({ _id: reportId, user: req.user.id });
+
+        if (!report) {
+            return res.status(404).json({
+                message: "Report not found."
+            });
+        }
+
+        const { resume, SelfDescription: selfDescription, JobDescription: jobDescription } = report;
+
+        const pdfBuffer = await generateResumePdf({ resume, selfDescription, jobDescription });
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=resume_${reportId}.pdf`);
+        res.send(pdfBuffer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
 module.exports = { 
     generateReportController,
     getReportByIdController,
-    getAllReportsController
- }
+    getAllReportsController,
+    generateResumePdfController
+ }  
+
 

@@ -173,7 +173,11 @@ const severityStyles = {
 const Interview = () => {
   const { report, fetchReportById, loading } = useInterview();
   const { id: interviewId } = useParams();
-
+  
+  const [techOpen, setTechOpen] = useState(true);
+  const [behavOpen, setBehavOpen] = useState(true);
+  const [roadmapOpen, setRoadmapOpen] = useState(true);
+  
   useEffect(() => {
     if (interviewId) {
       fetchReportById(interviewId);
@@ -192,9 +196,6 @@ const Interview = () => {
     );
   }
 
-  const [techOpen, setTechOpen] = useState(true);
-  const [behavOpen, setBehavOpen] = useState(true);
-  const [roadmapOpen, setRoadmapOpen] = useState(true);
 
 
   return (

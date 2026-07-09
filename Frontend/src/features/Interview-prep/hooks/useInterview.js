@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 
 export const useInterview = () => {
     const context = useContext(InterviewContext);
-    const { interviewId } = useParams();
+    const { id: interviewId } = useParams();
 
     if (!context) {
         throw new Error("useInterview must be used within an InterviewProvider");
@@ -39,8 +39,8 @@ export const useInterview = () => {
         let response = null
         try{
             response = await getReportById(interviewId);
-            setReport(response.report);
-            return response.report;
+            setReport(response.interviewReport);
+            return response.interviewReport;
 
         }catch(error){
             console.log(error)

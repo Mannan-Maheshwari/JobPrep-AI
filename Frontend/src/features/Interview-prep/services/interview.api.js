@@ -48,3 +48,15 @@ export const getAllReports = async () => {
 
     return response.data
 }
+
+/**
+ * @description Service to generate resume pdf from the report.
+ */
+
+export const generateResumePdf = async (reportId) => {
+    const response = await api.post(`/api/interview/resume/pdf/${reportId}`, null, {
+        responseType: "blob"
+    })
+
+    return response.data
+}

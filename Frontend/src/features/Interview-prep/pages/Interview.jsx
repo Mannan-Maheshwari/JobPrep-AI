@@ -171,13 +171,13 @@ const severityStyles = {
 };
 
 const Interview = () => {
-  const { report, fetchReportById, loading } = useInterview();
+  const { report, fetchReportById,generateResumePdfFromReport, loading } = useInterview();
   const { id: interviewId } = useParams();
   
   const [techOpen, setTechOpen] = useState(true);
   const [behavOpen, setBehavOpen] = useState(true);
   const [roadmapOpen, setRoadmapOpen] = useState(true);
-  
+
   useEffect(() => {
     if (interviewId) {
       fetchReportById(interviewId);
@@ -256,6 +256,12 @@ const Interview = () => {
             ))}
           </ul>
 
+          <button 
+          onClick={() => {generateResumePdfFromReport(report._id)}}
+          type="button" 
+          className="mt-10 bold flex w-full items-center justify-center gap-2 rounded-lg border border-white/5 bg-[#0b1220] px-3 py-2.5 text-sm text-white hover:bg-white/5">
+                  Download AI Generated Resume
+          </button>
           <div className="mt-auto space-y-1 pt-6">
             <button
               type="button"
@@ -265,6 +271,7 @@ const Interview = () => {
               Logout
             </button>
           </div>
+
         </nav>
       </aside>
 

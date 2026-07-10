@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useInterview } from "../hooks/useInterview.js";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../Auth/Hooks/useAuth.js";
 
 const MAX_JOB_DESC_CHARS = 5000;
 
@@ -10,6 +11,7 @@ const Home = () => {
   const [jobDescription, setJobDescription] = useState(""); 
   const [selfDescription, setSelfDescription] = useState("");
   const resumeFileRef = useRef(); 
+  const { user, handlelogout } = useAuth();
 
   const handlegenerateReport = async () => {
     const resumeFile = resumeFileRef.current?.files?.[0];
@@ -66,13 +68,27 @@ const Home = () => {
             </span>
           </div>
 
-          <nav className="hidden items-center gap-8 text-sm text-slate-400 md:flex">
-            <a href="#" className="transition-colors hover:text-white">
+          <nav className="hidden items-center gap-8 text-sm text-slate-400 md:flex md:flex-nowrap md:whitespace-nowrap">
+            <a href="#" className="transition-colors hover:text-white  rounded-lg px-3 
+          py-2.5 transition-colors hover:text-white border border-transparent hover:border-white/50">
               How it Works
             </a>
-            <a href="#" className="transition-colors hover:text-white">
-              Pricing
-            </a>
+            <button
+              onClick={() => {
+                if (user) {
+                  handlelogout();
+                } else {
+                  navigate("/login");
+                }
+              }}
+              type="button"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:text-white  rounded-lg px-3 
+          py-2.5 transition-colors hover:text-white border border-transparent hover:border-white/50"
+              
+            >
+              
+              Logout
+            </button>
           </nav>
 
           <button
@@ -108,9 +124,6 @@ const Home = () => {
             </div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <h2 className="text-xl font-semibold sm:text-2xl">The Opportunity</h2>
-              <span className="rounded-full border border-violet-500/40 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-violet-300">
-                Required
-              </span>
             </div>
 
             <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-xl shadow-black/20">
@@ -119,7 +132,7 @@ const Home = () => {
                 id="jobDescription"
                 name="jobDescription"
                 maxLength={MAX_JOB_DESC_CHARS}
-                placeholder="Paste the full job description here... Our engine will extract core competencies, cultural markers, and hidden technical requirements."
+                placeholder="Paste the full job description here... Our engine will extract core competencies  and hidden technical requirements."
                 className="min-h-[280px] w-full resize-y bg-transparent px-5 py-5 text-sm leading-relaxed text-slate-200 placeholder:text-slate-500 focus:outline-none sm:min-h-[360px] sm:px-6 sm:py-6 sm:text-base"
               />
               <div className="flex justify-end border-t border-white/5 px-5 py-3 sm:px-6">
@@ -175,13 +188,10 @@ const Home = () => {
                         />
                       </svg>
                     </span>
-                    <span className="text-sm font-medium text-slate-200">
+                    <span className="text-md font-medium text-white/80">
                       Resume Analysis
                     </span>
                   </div>
-                  <span className="shrink-0 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
-                    Recommended
-                  </span>
                 </div>
 
                 <label
@@ -225,18 +235,13 @@ const Home = () => {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/10" />
                   </div>
-                  <div className="relative flex justify-center">
-                    <span className="bg-[#0d1117] px-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
-                      Or provide context
-                    </span>
-                  </div>
                 </div>
 
                 {/* Self description */}
                 <div>
                   <label
                     htmlFor="selfDescription"
-                    className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500"
+                    className="mb-2 mt-10 block text-[12px] font-semibold uppercase tracking-[0.15em] text-white/50 sm:text-sm"
                   >
                     Self-Description
                   </label>
@@ -246,44 +251,17 @@ const Home = () => {
                     name="selfDescription"
                     rows={4}
                     placeholder="Highlight specific achievements or focus areas..."
-                    className="w-full resize-y rounded-xl border border-white/10 bg-[#080b10] px-4 py-3 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/30 sm:text-base"
+                    className="w-full h-[250px] resize-y rounded-xl border border-white/10 bg-[#080b10] px-4 py-3 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/30 sm:text-base"
                   />
-                </div>
-
-                {/* Info box */}
-                <div className="mt-5 flex gap-3 rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-3.5">
-                  <span className="mt-0.5 shrink-0 text-blue-400">
-                    <svg
-                      className="h-4 w-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      aria-hidden
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  <p className="text-xs leading-relaxed text-blue-200/80 sm:text-sm">
-                    Provide either a{" "}
-                    <strong className="font-semibold text-blue-100">Resume</strong> or{" "}
-                    <strong className="font-semibold text-blue-100">
-                      Self Description
-                    </strong>{" "}
-                    to allow our engine to map your specific strengths to the job
-                    requirements.
-                  </p>
                 </div>
               </div>
             </div>
 
             {/* Generate CTA card */}
-            <div className="rounded-2xl border border-white/10 bg-[#0d1117] p-5 shadow-xl shadow-black/20 sm:p-6">
+            <div className="rounded-2xl mt-10 border border-white/10 bg-[#0d1117] p-5 shadow-xl shadow-black/20 sm:p-6">
               <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
+                  <p className="text-[16px] font-bold uppercase tracking-[0.15em] text-slate-500">
                     Ready to build?
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
@@ -293,9 +271,6 @@ const Home = () => {
                 <div className="flex -space-x-2">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#0d1117] bg-gradient-to-br from-violet-500 to-indigo-600 text-[10px] font-bold">
                     AI
-                  </span>
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#0d1117] bg-slate-700 text-[10px] font-bold text-slate-300">
-                    G
                   </span>
                 </div>
               </div>

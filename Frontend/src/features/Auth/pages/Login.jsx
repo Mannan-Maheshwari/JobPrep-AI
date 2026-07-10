@@ -10,13 +10,18 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-        await handlelogin(email, password);
-        navigate("/");
-
+        setError("");
+        try {
+            await handlelogin(email, password);
+            navigate("/");
+        } catch (err) {
+            const message = err?.response?.data?.message || "Something went wrong. Please try again.";
+            setError(message);
+        }
     }
 
     if (loading) {
@@ -40,6 +45,7 @@ const Login = () => {
                         Email
                     </label>
                     <input
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
                         id="email"
@@ -53,6 +59,7 @@ const Login = () => {
                         Password
                     </label>
                     <input
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         type="password"
                         id="password"
@@ -61,6 +68,12 @@ const Login = () => {
                         className="bg-white text-black placeholder:text-gray-700 mt-2 rounded-xl border border-gray-600 h-10 w-full focus:ring-blue-500 focus:border-blue-500 p-2"
                     />
                 </div>
+
+                {error && (
+                    <p className="text-sm text-red-400" role="alert">
+                        {error}
+                    </p>
+                )}
 
                 <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-[scale_110] duration-300 ease-in-out ">
                     Login

@@ -3,6 +3,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const blacklistModel = require("../models/blacklist.model");
 
+
+// In production the frontend and backend live on different domains, so the
+// cookie must be marked secure + sameSite:"none" for the browser to send it
+// cross-site. Locally (http, same-ish origin) this isn't needed.
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+};
+
 /**
  * @name registerUserController
  * @description it registers a new user and expects username, email, password.

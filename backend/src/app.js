@@ -8,8 +8,17 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
+// FRONTEND_URL should be set in your hosting provider's environment variables
+// to your deployed frontend's exact URL (e.g. https://your-app.vercel.app).
+// Local dev (http://localhost:5173) is always allowed too.
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true
 }));
 

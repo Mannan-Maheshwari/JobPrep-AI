@@ -42,6 +42,7 @@ const geminiResponseSchema = {
             description: "Technical questions that can be asked in the interview along with their intention and how to answer them",
             items: {
                 type: Type.OBJECT,
+                required: ["question", "intention", "answer"],
                 properties: {
                     question: { type: Type.STRING, description: "The technical question can be asked in the interview" },
                     intention: { type: Type.STRING, description: "The intention of interviewer behind asking this question" },
@@ -54,6 +55,7 @@ const geminiResponseSchema = {
             description: "Behavioral questions that can be asked in the interview along with their intention and how to answer them",
             items: {
                 type: Type.OBJECT,
+                required: ["question", "intention", "answer"],
                 properties: {
                     question: { type: Type.STRING, description: "The behavioral question can be asked in the interview" },
                     intention: { type: Type.STRING, description: "The intention of interviewer behind asking this question" },
@@ -66,9 +68,10 @@ const geminiResponseSchema = {
             description: "List of skill gaps in the candidate's profile along with their severity",
             items: {
                 type: Type.OBJECT,
+                required: ["skill", "severity"],
                 properties: {
                     skill: { type: Type.STRING, description: "The skill which the candidate is lacking" },
-                    severity: { type: Type.STRING,type: Type.STRING, enum: ["low", "medium", "high"], description: "The severity of this skill gap, i.e. low, medium, or high" }
+                    severity: { type: Type.STRING, enum: ["low", "medium", "high"], description: "The severity of this skill gap, i.e. low, medium, or high" }
                 }
             }
         },
@@ -77,6 +80,7 @@ const geminiResponseSchema = {
             description: "A day-wise preparation plan for the candidate to follow in order to prepare for the interview effectively",
             items: {
                 type: Type.OBJECT,
+                required: ["day", "focus", "tasks"],
                 properties: {
                     day: { type: Type.INTEGER, description: "The day number in the preparation plan, starting from 1" },
                     focus: { type: Type.STRING, description: "The main focus of this day in the preparation plan, e.g. data structures, system design, mock interviews etc." },

@@ -472,7 +472,7 @@ const Interview = () => {
                 {report.SkillGaps.map(({ skill, severity }) => (
                   <span
                     key={skill}
-                    className={`rounded-full border px-3 py-1 text-s font-medium ${severityStyles[severity]}`}
+                    className={`rounded-full border p-3 text-s font-medium text-center break-words ${severityStyles[severity]}`}
                   >
                     {skill}
                   </span>

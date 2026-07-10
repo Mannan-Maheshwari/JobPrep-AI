@@ -1,168 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useInterview } from "../hooks/useInterview";
-import { useNavigate, useParams } from "react-router";
-
-// // MOCK DATA
-// const REPORT_DATA = {
-//   MatchScore: 92,
-//   TechnicalQuestions: [
-//     {
-//       question:
-//         "Walk me through the architecture of a typical MERN stack application. How do MongoDB, Express.js, React.js, and Node.js interact to deliver a full-stack experience?",
-//       intention:
-//         "To assess overall understanding of the MERN stack architecture and how components interact.",
-//       answer:
-//         "Explain the typical interaction: React handles the UI, sending requests to Express.js. Express.js routes these requests, interacts with MongoDB (via Mongoose/Node.js driver) for data, and sends responses back. Node.js provides the runtime for Express.js. Emphasize RESTful API communication and state management in React.",
-//     },
-//     {
-//       question:
-//         "Given your URL Shortener project, how would you enhance its backend using Express.js to include user authentication and custom short links, ensuring data validation and robust error handling?",
-//       intention:
-//         "To probe depth of Node.js/Express.js, API design, error handling, and database interaction.",
-//       answer:
-//         "Describe designing routes (e.g., /api/shorten, /:shortCode for redirect), using Express.js middleware for parsing and error handling, connecting to MongoDB for storing/retrieving links, and implementing validation for input URLs. Mention using `async/await` for database operations and proper HTTP status codes.",
-//     },
-//     {
-//       question:
-//         "What are the primary advantages of using Next.js for a production-ready web application compared to a traditional Create React App setup? Provide specific use cases.",
-//       intention:
-//         "To assess understanding of Next.js features, performance optimization, and architectural choices.",
-//       answer:
-//         "Discuss benefits like Server-Side Rendering (SSR) for initial page load performance and SEO, Static Site Generation (SSG) for highly performant static content, automatic code splitting, optimized image loading, and built-in API routes. Contrast with client-side rendering challenges in plain React.",
-//     },
-//     {
-//       question:
-//         "Explain different types of indexes in MongoDB and when you would choose to use each type. How do indexes impact read and write performance?",
-//       intention:
-//         "To assess database optimization knowledge and understanding of performance implications.",
-//       answer:
-//         "Discuss common types (e.g., single-field, compound, multikey, text, geospatial), how they improve query performance by reducing scan time, and their trade-offs (e.g., increased write overhead, memory usage). Give examples of when to use each.",
-//     },
-//     {
-//       question:
-//         "Describe the process of user authentication in a MERN stack application using JSON Web Tokens (JWTs). What are the security considerations and best practices you would follow?",
-//       intention:
-//         "To assess knowledge of authentication mechanisms and security best practices in web applications.",
-//       answer:
-//         "Describe a common flow: user registration/login, server generates JWT, sends to client. Client stores JWT (e.g., in `localStorage`/`httpOnly` cookie) and sends it with subsequent requests. Server validates JWT. Discuss pros (stateless, scalability) and cons (security of storage, token invalidation) of JWTs.",
-//     },
-//     {
-//       question:
-//         "Given your interest in Generative AI, how do you envision integrating AI-powered capabilities into a MERN stack web application? What technical challenges might you anticipate?",
-//       intention:
-//         "To probe interest in Generative AI, creative problem-solving, and foresight regarding new technologies.",
-//       answer:
-//         "Discuss potential use cases like AI-powered content generation for blogs, personalized recommendations, intelligent chatbots, or dynamic image/video creation. Challenges could include API integration complexity, latency, cost, data privacy, and managing AI model updates.",
-//     },
-//   ],
-//   BehaviouralQuestions: [
-//     {
-//       question:
-//         "Tell me about a time you faced a significant technical challenge in one of your projects. How did you approach it, and what was the outcome?",
-//       intention:
-//         "To assess problem-solving skills, resilience, and ability to learn from challenges.",
-//       answer:
-//         "Use the STAR method: Describe a Situation (e.g., a bug in the URL shortener backend or a challenge during a hackathon), the Task you had to complete, the Actions you took (e.g., debugging steps, research, collaboration), and the Result or outcome, including what you learned.",
-//     },
-//     {
-//       question:
-//         "You mentioned 'basic' Node.js skills in your resume. How do you plan to strengthen your proficiency in Node.js and other backend technologies relevant to a full-stack role?",
-//       intention:
-//         "To gauge self-awareness, growth mindset, and initiative in overcoming skill gaps.",
-//       answer:
-//         "Acknowledge the gap and demonstrate proactive learning. For example, explain how you are actively studying Node.js/Express.js documentation, building small projects, or following online courses. Emphasize your continuous learning mindset and eagerness to quickly ramp up in required technologies.",
-//     },
-//     {
-//       question:
-//         "Describe a situation where you had to work effectively within a team, especially during a high-pressure environment like a hackathon. What was your role, and what did you learn about collaboration?",
-//       intention:
-//         "To evaluate teamwork, communication skills, and ability to collaborate effectively in a development environment.",
-//       answer:
-//         "Describe a specific instance, perhaps from a hackathon, highlighting your role (e.g., frontend lead, backend contributor). Explain how you communicated with teammates, resolved conflicts, contributed to a shared goal, and learned from the collaborative process. Focus on active listening and constructive feedback.",
-//     },
-//     {
-//       question:
-//         "Given your interest in Generative AI and other emerging technologies, how do you stay updated with new developments and trends in the tech industry?",
-//       intention:
-//         "To assess your curiosity, initiative, and commitment to continuous learning in a rapidly evolving tech landscape.",
-//       answer:
-//         "Explain your process for staying current, such as following industry blogs, attending webinars, contributing to open-source projects, or taking online courses. Specifically mention how you are exploring Generative AI (e.g., experimenting with APIs, reading research papers).",
-//     },
-//   ],
-//   SkillGaps: [
-//     { skill: "Node.js/Express.js Depth", severity: "medium" },
-//     { skill: "Web Application Deployment & CI/CD", severity: "medium" },
-//     { skill: "Formal Object-Oriented Programming (OOP) Application", severity: "low" },
-//   ],
-//   PreparationPlan: [
-//     {
-//       day: 1,
-//       focus: "MERN Stack Fundamentals & JavaScript Deep Dive",
-//       tasks: [
-//         "Review core concepts of MongoDB, Express.js, React.js, and Node.js.",
-//         "Brush up on advanced JavaScript features (ES6+, async/await, promises).",
-//         "Understand the typical data flow and interaction between MERN stack components.",
-//         "Practice implementing basic CRUD operations using all four parts of MERN.",
-//       ],
-//     },
-//     {
-//       day: 2,
-//       focus: "Node.js & Express.js for Backend Development",
-//       tasks: [
-//         "Focus on building robust RESTful APIs with Express.js, including routing, middleware, and error handling.",
-//         "Implement data validation (e.g., using Joi or Express-validator) and explore authentication strategies (JWTs, session-based).",
-//         "Practice integrating MongoDB with Mongoose to perform complex queries and data modeling.",
-//       ],
-//     },
-//     {
-//       day: 3,
-//       focus: "React & Next.js for Frontend Excellence",
-//       tasks: [
-//         "Review advanced React concepts: Hooks, Context API, state management (e.g., Redux basics, Zustand).",
-//         "Deep dive into Next.js features: Server-Side Rendering (SSR), Static Site Generation (SSG), API routes, and data fetching strategies.",
-//         "Practice building complex, responsive UIs using Tailwind CSS and component libraries if applicable.",
-//       ],
-//     },
-//     {
-//       day: 4,
-//       focus: "Database Design, System Architecture & Deployment",
-//       tasks: [
-//         "Understand best practices for MongoDB schema design, indexing, and query optimization.",
-//         "Learn about basic system design principles for scalable web applications.",
-//         "Research common deployment strategies for MERN applications (e.g., Vercel, Netlify, Heroku, AWS EC2/Render) and CI/CD basics.",
-//       ],
-//     },
-//     {
-//       day: 5,
-//       focus: "Behavioral Questions & Project Review",
-//       tasks: [
-//         "Prepare answers to common behavioral questions using the STAR method.",
-//         "Thoroughly review all past projects, focusing on technical decisions, challenges faced, and lessons learned.",
-//         "Formulate intelligent questions to ask the interviewer about the role, team, and company culture.",
-//       ],
-//     },
-//     {
-//       day: 6,
-//       focus: "Generative AI Integration & Problem Solving",
-//       tasks: [
-//         "Research practical applications of Generative AI in web development and current trends.",
-//         "Think about how you would integrate a third-party AI API into a MERN application (e.g., for content generation, image processing).",
-//         "Practice problem-solving for common algorithmic questions (e.g., LeetCode mediums related to data structures).",
-//         "Consider edge cases and error handling in your technical solutions.",
-//       ],
-//     },
-//     {
-//       day: 7,
-//       focus: "Mock Interview & Final Review",
-//       tasks: [
-//         "Conduct a full mock interview (both technical and behavioral) with a peer or mentor.",
-//         "Review all prepared answers and technical concepts one last time.",
-//         "Ensure your environment is set up for any coding challenges (IDE, specific tools).",
-//         "Get adequate rest and mentally prepare for the interview.",
-//       ],
-//     },
-//   ],
-// };
+import { useAuth } from "../../Auth/Hooks/useAuth";
+import { useNavigate, useParams, Link} from "react-router";
 
 const severityStyles = {
   high: "border-red-500/40 bg-red-500/10 text-red-300",
@@ -170,19 +9,120 @@ const severityStyles = {
   low: "border-slate-500/40 bg-slate-500/10 text-slate-300",
 };
 
+// Wraps any substring of `text` that matches `query` (case-insensitive) in
+// a <mark> tag so it renders highlighted. Returns the original text
+// untouched if there's no query or no match.
+function highlightText(text, query) {
+  if (text === null || text === undefined) return text;
+  const value = String(text);
+  const q = query ? query.trim() : "";
+  if (!q) return value;
+
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "gi");
+  const parts = value.split(regex);
+
+  return parts.map((part, i) =>
+    part.toLowerCase() === q.toLowerCase() ? (
+      <mark key={i} className="rounded bg-yellow-400/40 px-0.5 text-yellow-100">
+        {part}
+      </mark>
+    ) : (
+      <React.Fragment key={i}>{part}</React.Fragment>
+    )
+  );
+}
+
 const Interview = () => {
-  const { report, fetchReportById,generateResumePdfFromReport, loading } = useInterview();
+  const { report, fetchReportById, generateResumePdfFromReport, loading } = useInterview();
   const { id: interviewId } = useParams();
-  
-  const [techOpen, setTechOpen] = useState(true);
-  const [behavOpen, setBehavOpen] = useState(true);
-  const [roadmapOpen, setRoadmapOpen] = useState(true);
+
+  // Sections default to collapsed on load/refresh
+  const [techOpen, setTechOpen] = useState(false);
+  const [behavOpen, setBehavOpen] = useState(false);
+  const [roadmapOpen, setRoadmapOpen] = useState(false);
+  const { user, handlelogout } = useAuth();
+  const navigate = useNavigate();
+
+  // Derive a display name from the logged-in user (username field, per
+  // useAuth's register() call), falling back to the email prefix
+  const displayName = user?.username || (user?.email ? user.email.split("@")[0] : "");
+  const avatarInitial = displayName ? displayName.charAt(0).toUpperCase() : "U";
+
+  // Strategy nav items carry a key so we can drive exclusive expand/collapse
+  // behavior and highlight whichever section is currently open
+  const strategyNavItems = [
+    { label: "Technical questions", icon: "help", key: "tech" },
+    { label: "Behavioral questions", icon: "chat", key: "behav" },
+    { label: "Road Map", icon: "map", key: "roadmap" },
+  ];
+
+  const handleStrategyNavClick = (key) => {
+    setTechOpen(key === "tech");
+    setBehavOpen(key === "behav");
+    setRoadmapOpen(key === "roadmap");
+  };
+
+  const isNavItemActive = (key) => {
+    if (key === "tech") return techOpen;
+    if (key === "behav") return behavOpen;
+    if (key === "roadmap") return roadmapOpen;
+    return false;
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const technicalSectionRef = useRef(null);
+  const behavioralSectionRef = useRef(null);
+  const roadmapSectionRef = useRef(null);
 
   useEffect(() => {
     if (interviewId) {
       fetchReportById(interviewId);
     }
   }, [interviewId]);
+
+  useEffect(() => {
+    if (!report) return;
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return;
+
+    const techHasMatch = (report.TechnicalQuestions || []).some(
+      (q) =>
+        q.question.toLowerCase().includes(query) ||
+        q.intention.toLowerCase().includes(query) ||
+        q.answer.toLowerCase().includes(query)
+    );
+    const behavHasMatch = (report.BehaviouralQuestions || []).some(
+      (q) =>
+        q.question.toLowerCase().includes(query) ||
+        q.intention.toLowerCase().includes(query) ||
+        q.answer.toLowerCase().includes(query)
+    );
+    const roadmapHasMatch = (report.PreparationPlan || []).some(
+      (p) =>
+        p.focus.toLowerCase().includes(query) ||
+        (p.tasks || []).some((t) => t.toLowerCase().includes(query))
+    );
+
+    setTechOpen(techHasMatch);
+    setBehavOpen(behavHasMatch);
+    setRoadmapOpen(roadmapHasMatch);
+
+    const firstMatchRef = techHasMatch
+      ? technicalSectionRef
+      : behavHasMatch
+      ? behavioralSectionRef
+      : roadmapHasMatch
+      ? roadmapSectionRef
+      : null;
+
+    if (firstMatchRef) {
+      // wait a tick so the section has actually expanded before scrolling
+      setTimeout(() => {
+        firstMatchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [searchQuery, report]);
 
   if (!report) {
     return <div className="flex min-h-screen items-center justify-center bg-[#0a0e1b] text-white">Loading...</div>;
@@ -196,18 +136,13 @@ const Interview = () => {
     );
   }
 
-
-
   return (
     <div className="flex min-h-screen bg-[#0a0e1b] text-white">
       {/* Left sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-white/5 bg-[#080c16] lg:flex xl:w-72">
         <div className="border-b border-white/5 px-6 py-6">
           <p className="font-semibold text-white">
-            {/* /**
-            @name
-            @description - Name of the person Who logged in
-             */ }
+            {displayName}
           </p>
           <p className="mt-0.5 text-sm text-slate-500">Full Stack Developer</p>
         </div>
@@ -222,6 +157,11 @@ const Interview = () => {
               <li key={item.label}>
                 <button
                   type="button"
+                  onClick={() => {
+                    if (item.label === "Dashboard") {
+                      navigate("/");
+                    }
+                  }}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
                 >
                   <NavIcon type={item.icon} />
@@ -235,16 +175,16 @@ const Interview = () => {
             Strategy
           </p>
           <ul className="space-y-1">
-            {[
-              { label: "Technical questions", icon: "help",active: true, href: "#" },
-              { label: "Behavioral questions", icon: "chat", href: "#" },
-              { label: "Road Map", icon: "map", href: "#" },
-            ].map((item) => (
+            {strategyNavItems.map((item) => (
               <li key={item.label}>
                 <a
-                  href={item.href}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleStrategyNavClick(item.key);
+                  }}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                    item.active
+                    isNavItemActive(item.key)
                       ? "border-l-2 border-blue-400 bg-blue-500/10 text-white"
                       : "text-slate-400 hover:bg-white/5 hover:text-white"
                   }`}
@@ -256,21 +196,15 @@ const Interview = () => {
             ))}
           </ul>
 
-          <button 
-          onClick={() => {generateResumePdfFromReport(report._id)}}
-          type="button" 
-          className="mt-10 bold flex w-full items-center justify-center gap-2 rounded-lg border border-white/5 bg-[#0b1220] px-3 py-2.5 text-sm text-white hover:bg-white/5">
-                  Download AI Generated Resume
+          <button
+            onClick={() => { generateResumePdfFromReport(report._id) }}
+            type="button"
+            className="mt-10 bold flex w-full items-center justify-center gap-2 rounded-lg border border-white/5 bg-[#0b1220] px-3 py-2.5 text-sm text-white hover:bg-white/5">
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2zm7-1l.7 2.3L22 4l-2.3.7L19 7l-.7-2.3L16 4l2.3-.7L19 1zM5 15l1 2.8L9 19l-3 1-1 3-1-3-3-1 3-1.2L5 15z"/>
+            </svg>  
+            <span className="leading-none">Download AI Generated Resume</span>
           </button>
-          <div className="mt-auto space-y-1 pt-6">
-            <button
-              type="button"
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-orange-400/80 hover:bg-white/5"
-            >
-              <NavIcon type="logout" />
-              Logout
-            </button>
-          </div>
 
         </nav>
       </aside>
@@ -279,9 +213,9 @@ const Interview = () => {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top header */}
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-white/5 bg-[#0a0e1b]/95 px-4 py-3 backdrop-blur-sm sm:px-6">
-          <span className="shrink-0 text-lg font-bold tracking-tight lg:hidden">ProCareer</span>
+          <span className="shrink-0 text-lg font-bold tracking-tight lg:hidden">Job-Prep AI</span>
           <span className="hidden shrink-0 text-lg font-bold tracking-tight lg:block xl:hidden">
-            ProCareer
+            Job-Prep AI
           </span>
 
           <div className="relative mx-auto hidden max-w-xl flex-1 lg:block">
@@ -300,24 +234,31 @@ const Interview = () => {
             </svg>
             <input
               type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search strategy resources..."
               className="w-full rounded-full border border-white/10 bg-[#111827] py-2.5 pl-11 pr-4 text-sm text-slate-300 placeholder:text-slate-600 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
             />
           </div>
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
-            <IconButton label="Notifications">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-              </svg>
-            </IconButton>
-            <IconButton label="Messages">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-              </svg>
-            </IconButton>
+            <div>
+              <button
+                onClick={() => {
+                  if (user) {
+                    handlelogout();
+                  } else {
+                    navigate("/login");
+                  }
+                }}
+                type="button"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:text-white rounded-lg px-3 py-2.5 border border-transparent hover:border-white/50">
+                <NavIcon type="logout" />
+                Logout
+              </button>
+            </div>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-semibold">
-              MM
+              {avatarInitial}
             </span>
           </div>
         </header>
@@ -328,7 +269,7 @@ const Interview = () => {
             {/* Roadmap moved below behavioral questions */}
 
             {/* Technical questions */}
-            <section id="technical-questions" className="mt-5 border-t border-white/5 pt-5">
+            <section id="technical-questions" ref={technicalSectionRef} className="mt-5 border-t border-white/5 pt-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">Technical Questions</h2>
@@ -356,14 +297,14 @@ const Interview = () => {
               {techOpen && (
                 <div className="mt-6 space-y-4">
                   {report.TechnicalQuestions.map((item, i) => (
-                    <QuestionCard key={item.question} index={i + 1} {...item} accent="blue" />
+                    <QuestionCard key={item.question} index={i + 1} {...item} accent="blue" searchQuery={searchQuery} />
                   ))}
                 </div>
               )}
             </section>
 
             {/* Behavioral questions */}
-            <section id="behavioral-questions" className=" mt-5 border-t border-white/5 pt-5 ">
+            <section id="behavioral-questions" ref={behavioralSectionRef} className=" mt-5 border-t border-white/5 pt-5 ">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">Behavioral Questions</h2>
@@ -391,14 +332,14 @@ const Interview = () => {
               {behavOpen && (
                 <div className="mt-6 space-y-4">
                   {report.BehaviouralQuestions.map((item, i) => (
-                    <QuestionCard key={item.question} index={i + 1} {...item} accent="violet" />
+                    <QuestionCard key={item.question} index={i + 1} {...item} accent="violet" searchQuery={searchQuery} />
                   ))}
                 </div>
               )}
             </section>
 
             {/* Roadmap section (moved) */}
-            <section id="roadmap">
+            <section id="roadmap" ref={roadmapSectionRef}>
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="mt-5 pt-5 text-xl font-bold sm:text-2xl">Interview Road Map</h1>
@@ -426,7 +367,7 @@ const Interview = () => {
               </div>
               {roadmapOpen && (
                 <>
-                  
+
 
                   {/* Match score — visible on mobile/tablet */}
                   <div className="mt-5 flex items-center gap-4 rounded-xl border border-white/10 bg-[#111827] p-4 xl:hidden">
@@ -457,7 +398,7 @@ const Interview = () => {
                           <div className={`min-w-0 flex-1 ${!isLast ? "pb-10" : "pb-4"}`}>
                             <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
                               <h2 className="text-base font-semibold sm:text-lg">
-                                Phase {phase.day}: {phase.focus}
+                                Phase {phase.day}: {highlightText(phase.focus, searchQuery)}
                               </h2>
                             </div>
 
@@ -466,9 +407,9 @@ const Interview = () => {
                                 {phase.tasks.slice(0, 2).map((task) => (
                                   <div key={task} className="rounded-xl border border-white/10 bg-[#111827] p-4">
                                     <p className="line-clamp-2 text-sm font-medium text-slate-200">
-                                      {task.split(".")[0]}
+                                      {highlightText(task.split(".")[0], searchQuery)}
                                     </p>
-                                    <p className="mt-2 line-clamp-2 text-xs text-slate-500">{task}</p>
+                                    <p className="mt-2 line-clamp-2 text-xs text-slate-500">{highlightText(task, searchQuery)}</p>
                                   </div>
                                 ))}
                               </div>
@@ -476,8 +417,8 @@ const Interview = () => {
 
                             {(
                               <div className="rounded-xl border border-blue-500/20 bg-[#111827] p-5">
-                                <p className="text-sm font-medium text-slate-200">{phase.focus}</p>
-                                <p className="mt-2 text-xs leading-relaxed text-slate-500">{phase.tasks[0]}</p>
+                                <p className="text-sm font-medium text-slate-200">{highlightText(phase.focus, searchQuery)}</p>
+                                <p className="mt-2 text-xs leading-relaxed text-slate-500">{highlightText(phase.tasks[0], searchQuery)}</p>
                               </div>
                             )}
 
@@ -487,7 +428,7 @@ const Interview = () => {
                                   {phase.tasks.map((task) => (
                                     <li key={task} className="flex gap-2 text-xs text-slate-500">
                                       <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-600" />
-                                      {task}
+                                      {highlightText(task, searchQuery)}
                                     </li>
                                   ))}
                                 </ul>
@@ -531,7 +472,7 @@ const Interview = () => {
                 {report.SkillGaps.map(({ skill, severity }) => (
                   <span
                     key={skill}
-                    className={`rounded-full border px-3 py-1 text-xs font-medium ${severityStyles[severity]}`}
+                    className={`rounded-full border px-3 py-1 text-s font-medium ${severityStyles[severity]}`}
                   >
                     {skill}
                   </span>
@@ -539,7 +480,7 @@ const Interview = () => {
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-[#111827] p-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-slate-500">
                   Analysis
                 </p>
                 <p className="mt-2 text-xs leading-relaxed text-slate-400">
@@ -547,12 +488,6 @@ const Interview = () => {
                   Node.js/Express.js patterns and deployment workflows to close remaining gaps
                   before your interview.
                 </p>
-                <button
-                  type="button"
-                  className="mt-4 w-full rounded-lg border border-blue-400/50 py-2 text-xs font-semibold text-blue-400 transition-colors hover:bg-blue-500/10"
-                >
-                  View Study Plan
-                </button>
               </div>
             </div>
           </aside>
@@ -591,7 +526,7 @@ function MatchScoreRing({ score, size = "md" }) {
   );
 }
 
-function QuestionCard({ index, question, intention, answer, accent }) {
+function QuestionCard({ index, question, intention, answer, accent, searchQuery }) {
   const [open, setOpen] = useState(false);
   const accentBorder = accent === "blue" ? "border-l-blue-500" : "border-l-violet-500";
   const accentBadge =
@@ -608,7 +543,7 @@ function QuestionCard({ index, question, intention, answer, accent }) {
               Q{index}
             </span>
             <h3 className="min-w-0 flex-1 cursor-pointer text-sm font-medium leading-relaxed text-slate-200 sm:text-base" onClick={() => setOpen((s) => !s)}>
-              {question}
+              {highlightText(question, searchQuery)}
             </h3>
           </div>
           <button
@@ -628,13 +563,13 @@ function QuestionCard({ index, question, intention, answer, accent }) {
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">
                 Interviewer Intention
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-400 sm:text-sm">{intention}</p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-400 sm:text-sm">{highlightText(intention, searchQuery)}</p>
             </div>
             <div className="rounded-lg border border-white/5 bg-[#0a0e1b] p-3 sm:p-4">
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-600">
                 Suggested Answer
               </p>
-              <p className="mt-1.5 text-xs leading-relaxed text-slate-400 sm:text-sm">{answer}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-400 sm:text-sm">{highlightText(answer, searchQuery)}</p>
             </div>
           </div>
         )}

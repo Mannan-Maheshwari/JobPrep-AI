@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const blacklistModel = require("../models/blacklist.model");
 
-
 // In production the frontend and backend live on different domains, so the
 // cookie must be marked secure + sameSite:"none" for the browser to send it
 // cross-site. Locally (http, same-ish origin) this isn't needed.
@@ -52,7 +51,7 @@ async function registerUserController(req,res){
         {expiresIn:"1d"}
     )
 
-    res.cookie("token",token);
+    res.cookie("token",token,cookieOptions);
 
     res.status(201).json({
         message:"User registered successfully",
@@ -97,7 +96,7 @@ async function loginUser(req, res){
         {expiresIn:"1d"}
     )
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
     res.status(200).json({
         message: "User logged in successfully",
         user: {
@@ -122,7 +121,7 @@ async function logoutUser(req, res){
         await blacklistModel.create({token})
     }
 
-    res.clearCookie("token");
+    res.clearCookie("token", cookieOptions);
     res.status(200).json({
         message: "User logged out successfully"
     });

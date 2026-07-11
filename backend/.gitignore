@@ -36,3 +36,6 @@ yarn-error.log*
 # vercel
 .vercel
 
+# puppeteer's downloaded chrome binary — regenerated at build time, never commit
+/.cache
+

@@ -179,6 +179,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         - Only include sections (e.g. extracurriculars, certifications, projects) if relevant information for that section is present in the provided Resume or Self Description. Never include a section with placeholder or invented content.
                         - Extract the candidate's actual name, work history, education, and skills strictly from the Resume text provided. Never use placeholder names like "John Doe" — if the name cannot be determined from the resume, omit the name field rather than inventing one.
                         - ...(rest of your existing formatting/ATS instructions)
+                        - The Resume should be of single page length when converted to PDF. If the content exceeds one page, truncate it appropriately while ensuring that the most relevant information is retained.
                     `;
 
     const maxRetries = 3;

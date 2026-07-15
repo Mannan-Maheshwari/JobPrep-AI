@@ -29,22 +29,50 @@ const Register = () => {
 
     if (loading) {
         return (
-            <main>
-                <h1>Loading....</h1>
+            <main className="flex h-screen items-center justify-center bg-[#05070a] text-white">
+                <p className="text-lg font-semibold">Creating your account...</p>
             </main>
         );
     } 
 
   return (
-    <main className="screen bg-zinc-800 text-white flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-md mt-10 p-8 space-y-4 bg-zinc-900 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold ">
-                Register
-            </h1>
+    <div className="min-h-screen bg-[#05070a] text-white selection:bg-violet-500/30">
+      {/* subtle radial glow — matches Home */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(124,58,237,0.18),transparent)]"
+      />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="mb-4">  
-                    <label htmlFor="Username" className="block text-sm font-medium text-white">
+      <main className="relative z-10 flex min-h-screen items-center justify-center px-4 py-10">
+        <div className="w-full max-w-md">
+          {/* Logo lockup — matches Home header */}
+          <div className="mb-8 flex items-center justify-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/20">
+              <svg
+                className="h-4 w-4 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
+              </svg>
+            </span>
+            <span className="text-base font-semibold tracking-tight sm:text-lg">
+              Job-Prep AI
+            </span>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-[#0d1117] p-6 shadow-xl shadow-black/20 sm:p-8">
+            <h1 className="text-2xl font-bold sm:text-3xl">
+                Create your account
+            </h1>
+            <p className="mt-1.5 text-sm text-slate-500">
+                Start building your interview strategy.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                <div>  
+                    <label htmlFor="Username" className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.15em] text-white/50 sm:text-sm">
                         Username
                     </label>
                     <input
@@ -54,11 +82,11 @@ const Register = () => {
                         id="Username"
                         name="Username"
                         placeholder="Enter username"
-                        className="bg-white p-2 text-black placeholder:text-gray-700 mt-2 rounded-xl border border-gray-600 h-10 w-full focus:ring-blue-500 focus:border-blue-500" 
+                        className="h-11 w-full rounded-xl border border-white/10 bg-[#080b10] px-4 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/30 sm:text-base"
                     />
                 </div>
-                <div className="mb-4">  
-                    <label htmlFor="email" className="block text-sm font-medium text-white">
+                <div>  
+                    <label htmlFor="email" className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.15em] text-white/50 sm:text-sm">
                         Email
                     </label>
                     <input
@@ -68,11 +96,11 @@ const Register = () => {
                         id="email"
                         name="email"
                         placeholder="Enter email address"
-                        className="bg-white p-2 text-black placeholder:text-gray-700 mt-2 rounded-xl border border-gray-600 h-10 w-full focus:ring-blue-500 focus:border-blue-500" 
+                        className="h-11 w-full rounded-xl border border-white/10 bg-[#080b10] px-4 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/30 sm:text-base"
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="password" className="block text-sm font-medium text-white">
+                <div>
+                    <label htmlFor="password" className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.15em] text-white/50 sm:text-sm">
                         Password
                     </label>
                     <input
@@ -82,7 +110,7 @@ const Register = () => {
                         id="password"
                         name="password"
                         placeholder="Enter password"
-                        className="bg-white text-black placeholder:text-gray-700 mt-2 rounded-xl border border-gray-600 h-10 w-full focus:ring-blue-500 focus:border-blue-500 p-2"
+                        className="h-11 w-full rounded-xl border border-white/10 bg-[#080b10] px-4 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/30 sm:text-base"
                     />
                 </div>
 
@@ -92,16 +120,35 @@ const Register = () => {
                     </p>
                 )}
 
-                <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-[scale_110] duration-300 ease-in-out ">
+                <button
+                    type="submit"
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-indigo-500 hover:shadow-violet-500/40 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-[#0d1117] sm:py-4 sm:text-base"
+                >
                     Register
+                    <svg
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        aria-hidden
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                        />
+                    </svg>
                 </button>
             </form>
 
-            <p className="text-sm text-gray-400 mt-4">
-                Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
+            <p className="mt-6 text-center text-sm text-slate-500">
+                Already have an account? <Link to="/login" className="font-medium text-violet-400 transition-colors hover:text-violet-300">Login</Link>
             </p>
+          </div>
         </div>
-    </main>
+      </main>
+    </div>
   )
 }
 

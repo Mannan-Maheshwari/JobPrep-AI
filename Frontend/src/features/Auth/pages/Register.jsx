@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate, Link } from 'react-router';
 import { useAuth } from '../Hooks/useAuth';
+import Loading from '../../../components/Loading.jsx';
 
 
 
@@ -28,11 +29,7 @@ const Register = () => {
     }
 
     if (loading) {
-        return (
-            <main className="flex h-screen items-center justify-center bg-[#05070a] text-white">
-                <p className="text-lg font-semibold">Creating your account...</p>
-            </main>
-        );
+        return <Loading message="Creating your account..." />;
     } 
 
   return (

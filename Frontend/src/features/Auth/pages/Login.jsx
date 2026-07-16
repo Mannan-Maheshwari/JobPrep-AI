@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { useNavigate, Link } from 'react-router';
 import { useAuth } from '../Hooks/useAuth.js';
+import Loading from '../../../components/Loading.jsx';
 
 
 const Login = () => {
@@ -25,11 +26,7 @@ const Login = () => {
     }
 
     if (loading) {
-        return (
-            <main className="flex h-screen items-center justify-center bg-[#05070a] text-white">
-                <p className="text-lg font-semibold">Signing you in...</p>
-            </main>
-        );
+        return <Loading message="Signing you in..." />;
     }
 
     return (
@@ -61,7 +58,7 @@ const Login = () => {
 
           <div className="rounded-2xl border border-white/10 bg-[#0d1117] p-6 shadow-xl shadow-black/20 sm:p-8">
             <h1 className="text-2xl font-bold sm:text-3xl">
-                Welcome back
+                Login
             </h1>
             <p className="mt-1.5 text-sm text-slate-500">
                 Log in to continue your interview prep.

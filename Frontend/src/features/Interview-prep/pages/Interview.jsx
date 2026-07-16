@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useInterview } from "../hooks/useInterview";
 import { useAuth } from "../../Auth/Hooks/useAuth";
 import { useNavigate, useParams, Link} from "react-router";
+import Loading from "../../../components/Loading.jsx";
 
 const severityStyles = {
   high: "border-red-500/40 bg-red-500/10 text-red-300",
@@ -125,15 +126,11 @@ const Interview = () => {
   }, [searchQuery, report]);
 
   if (!report) {
-    return <div className="flex min-h-screen items-center justify-center bg-[#0a0e1b] text-white">Loading...</div>;
+    return <Loading />;
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0e1b] text-white">
-        <p className="text-lg font-semibold">Fetching your interview strategy...</p>
-      </div>
-    );
+    return <Loading message="Fetching your interview strategy..." />;
   }
 
   return (

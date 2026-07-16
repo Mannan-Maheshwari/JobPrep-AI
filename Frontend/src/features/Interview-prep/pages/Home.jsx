@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useInterview } from "../hooks/useInterview.js";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../Auth/Hooks/useAuth.js";
+import Loading from "../../../components/Loading.jsx";
 
 const MAX_JOB_DESC_CHARS = 5000;
 
@@ -34,11 +35,7 @@ const Home = () => {
   };
 
   if(loading){
-    return (
-      <main className="flex h-screen items-center justify-center bg-[#05070a] text-white">
-        <p className="text-lg font-semibold">Generating your interview strategy...</p>
-      </main>
-    )
+    <Loading message="Generating your interview strategy..." />;
   }
 
   return (
